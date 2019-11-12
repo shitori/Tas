@@ -19,5 +19,13 @@ public class Main {
         a.extractMin();
         a.printer();*/
 
+        BinomialHeap<Integer> t = new BinomialHeap<Integer>();
+        t.insert(new BinomialHeap.Node<Integer>(4));
+        t.insert(new BinomialHeap.Node<Integer>(2));
+        t.insert(new BinomialHeap.Node<Integer>(6));
+        t.print();
+        t.extractMin();
+        t.print();
+
     }
 }

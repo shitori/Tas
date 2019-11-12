@@ -12,11 +12,36 @@ public class BinomialHeap<T> {
 
         public Node() {
             key = null;
+            parent = null;
+            sibling = null;
+            child = null;
+            degree = 0;
         }
 
-        public Node(T key) {
-            this.key = key;
+        public Node(T x) {
+            key = x;
+            parent = null;
+            sibling = null;
+            child = null;
+            degree = 0;
         }
+
+        public void print(int level) {
+            Node<T> curr = this;
+            while (curr != null) {
+                StringBuilder sb = new StringBuilder();
+                for (int i = 0; i < level; i++) {
+                    sb.append(" ");
+                }
+                sb.append(curr.key.toString());
+                System.out.println(sb.toString());
+                if (curr.child != null) {
+                    curr.child.print(level + 1);
+                }
+                curr = curr.sibling;
+            }
+        }
+
     }
 
     private Node<T> head;
@@ -150,27 +175,39 @@ public class BinomialHeap<T> {
         return min;
     }
 
-    Node<T> ExtractMin() {
+    Node<T> extractMin() {
         T min = findMin();
         BinomialHeap<T> t = new BinomialHeap<T>();
         BinomialHeap<T> t1= new BinomialHeap<T>();
         BinomialHeap<T> t2= new BinomialHeap<T>();
         Node<T> x = this.head;
         while (x.key != min) {
-            t1.insert(x);
+            Node<T> tmp = x;
+            t1.insert(tmp);
             x = x.sibling;
         }
         Node<T> y = x.child;
+        Node<T> z = new Node<>();
+
         while (y!=null){
-            t2.insert(y);
+            Node<T> tmp = z;
+            z = new Node<>();
+            z.key = y.key;
+            z.sibling = tmp;
             y=y.sibling;
         }
+        t2.head = z;
         t = union(t1,t2);
         this.head = t.head;
         return x;
     }
 
-
+    public void print() {
+        System.out.println("Binomial heap:");
+        if (head != null) {
+            head.print(0);
+        }
+    }
 
     boolean superior(T arg1, T arg2) {
         if (arg1 == null || arg2 == null) {

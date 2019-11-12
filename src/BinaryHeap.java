@@ -79,6 +79,9 @@ public class BinaryHeap<T> {
         set(0, get(size() - 1));
         remove(size() - 1);
         heapUp(0);
+        if (size() == capacity()/2){
+            reduce_capacity();
+        }
         return min;
     }
 
@@ -97,6 +100,9 @@ public class BinaryHeap<T> {
     }
 
     void insert(T k) {
+        if (capacity() == size()){
+            enlarge_capacity();
+        }
         add(k);
         reduceKey(size() - 1, k);
     }
@@ -127,6 +133,16 @@ public class BinaryHeap<T> {
 
     int capacity() {
         return capacity;
+    }
+
+    private void enlarge_capacity(){
+        capacity *= 2;
+        data.ensureCapacity( capacity );
+    }
+
+    void reduce_capacity(){
+        capacity /= 2;
+        data.ensureCapacity( capacity );
     }
 
 }

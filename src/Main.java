@@ -2,30 +2,25 @@
 public class Main {
 
     public static void main(String[] args) {
-        /*BinaryHeap<Integer> a = new BinaryHeap<Integer>();
-        a.insert(3);
-        a.insert(4);
-        a.insert(45);
-        a.insert(49);
-        a.insert(10);
-        a.insert(78);
-        a.insert(56);
-        a.insert(61);
-        a.insert(54);
-        a.insert(72);
-        a.extractMin();
-        a.extractMin();
-        a.extractMin();
-        a.extractMin();
-        a.printer();*/
+        BinomialHeap bh = new BinomialHeap();
+        BinomialHeap.insert(bh,new Node(5));
+        BinomialHeap.insert(bh,new Node(15));
+        BinomialHeap.insert(bh,new Node(25));
+        BinomialHeap.insert(bh,new Node(35));
+        BinomialHeap.insert(bh,new Node(45));
+        bh.getHead().print(0);
+        Node min = bh.extractMin();
+        System.out.println("arbre apres extraction:");
+        bh.getHead().print(0);
+        System.out.println("min= "+min.key);
 
-        BinomialHeap<Integer> t = new BinomialHeap<Integer>();
-        t.insert(new BinomialHeap.Node<Integer>(4));
-        t.insert(new BinomialHeap.Node<Integer>(2));
-        t.insert(new BinomialHeap.Node<Integer>(6));
-        t.print();
-        t.extractMin();
-        t.print();
+        BinomialHeap bh1 = new BinomialHeap();
+
+        BinomialHeap.insert(bh1,new Node(25));
+        BinomialHeap.insert(bh1,new Node(35));
+        BinomialHeap.insert(bh1,new Node(15));
+        System.out.println("arbre apres all insert:");
+        bh1.getHead().print(0);
 
     }
 }

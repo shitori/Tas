@@ -1,70 +1,27 @@
-import java.lang.Comparable;
-import java.util.ArrayList;
-import java.util.List;
 
-public class BinomialHeap<T> {
-    public static class Node<T> {
-        public T key;
-        public int degree;
-        public Node<T> parent;
-        public Node<T> child;
-        public Node<T> sibling;
+public class BinomialHeap {
 
-        public Node() {
-            key = null;
-            parent = null;
-            sibling = null;
-            child = null;
-            degree = 0;
-        }
-
-        public Node(T x) {
-            key = x;
-            parent = null;
-            sibling = null;
-            child = null;
-            degree = 0;
-        }
-
-        public void print(int level) {
-            Node<T> curr = this;
-            while (curr != null) {
-                StringBuilder sb = new StringBuilder();
-                for (int i = 0; i < level; i++) {
-                    sb.append(" ");
-                }
-                sb.append(curr.key.toString());
-                System.out.println(sb.toString());
-                if (curr.child != null) {
-                    curr.child.print(level + 1);
-                }
-                curr = curr.sibling;
-            }
-        }
-
-    }
-
-    private Node<T> head;
+    private Node head;
 
     public BinomialHeap() {
         head = null;
     }
 
-    public boolean isEmpty() {
-        return head == null;
+    public Node getHead() {
+        return head;
     }
 
-    public void clear() {
-        head = null;
+    public void setHead(Node x) {
+        head = x;
     }
 
-    public Node<T> minimum() {
-        Node y = new Node();
+    public Node getMin() {
+        Node y = null;
         Node x = head;
-        T min = head.key;
+        int min = (int) Double.POSITIVE_INFINITY;
         while (x != null) {
-            if (superior(min, (T) x.key)) {
-                min = (T) x.key;
+            if (x.key < min) {
+                min = x.key;
                 y = x;
             }
             x = x.sibling;
@@ -72,166 +29,139 @@ public class BinomialHeap<T> {
         return y;
     }
 
-    void link(Node y, Node z) {
+    static void link(Node y, Node z) {
         y.parent = z;
         y.sibling = z.child;
         z.child = y;
         z.degree += 1;
     }
 
-    Node<T> merge(BinomialHeap<T> heap1, BinomialHeap<T> heap2) {
-        if (heap1.head == null) {
-            return heap2.head;
-        } else if (heap2.head == null) {
-            return heap1.head;
-        } else {
-            Node<T> head;
-            Node<T> heap1Next = heap1.head;
-            Node<T> heap2Next = heap2.head;
-
-            if (heap1.head.degree <= heap2.head.degree) {
-                head = heap1.head;
-                heap1Next = heap1Next.sibling;
-            } else {
-                head = heap2.head;
-                heap2Next = heap2Next.sibling;
-            }
-
-            Node<T> tail = head;
-
-            while (heap1Next != null && heap2Next != null) {
-                if (heap1Next.degree <= heap2Next.degree) {
-                    tail.sibling = heap1Next;
-                    heap1Next = heap1Next.sibling;
-                } else {
-                    tail.sibling = heap2Next;
-                    heap2Next = heap2Next.sibling;
-                }
-
-                tail = tail.sibling;
-            }
-
-            if (heap1Next != null) {
-                tail.sibling = heap1Next;
-            } else {
-                tail.sibling = heap2Next;
-            }
-
-            return head;
-        }
-    }
-
-    BinomialHeap<T> union(BinomialHeap<T> heap1, BinomialHeap<T> heap2) {
-        BinomialHeap<T> t = new BinomialHeap<T>();
-        t.head = merge(heap1, heap2);
+    static public BinomialHeap union(BinomialHeap t1, BinomialHeap t2) {
+        BinomialHeap t = new BinomialHeap();
+        t1.merge(t2);
+        t.head = t1.head;
         if (t.head == null) {
             return t;
         }
-        Node<T> beforeX = null;
-        Node<T> x = t.head;
-        Node<T> afterX = x.sibling;
-        while (afterX != null) {
-            if (x.degree != afterX.degree || afterX.sibling != null && afterX.sibling.degree == x.degree) {
-                beforeX = x;
-                x = afterX;
+        Node avx = null;
+        Node x = t.head;
+        Node apx = x.sibling;
+        while (apx != null) {
+            if (x.degree != apx.degree || apx.sibling != null && apx.sibling.degree == x.degree) {
+                avx = x;
+                x = apx;
             } else {
-                if (superiorEqual(afterX.key, x.key)) {
-                    x.sibling = afterX.sibling;
-                    link(afterX, x);
+                if (x.key < apx.key) {
+                    x.sibling = apx.sibling;
+                    link(apx, x);
                 } else {
-                    if (beforeX == null) {
-                        t.head = afterX;
+                    if (avx == null) {
+                        t.head = apx;
                     } else {
-                        beforeX.sibling = afterX;
+                        avx.sibling = apx;
                     }
-                    link(x, afterX);
+                    link(x, apx);
                 }
-                x = afterX;
+                x = apx;
             }
-            afterX = x.sibling;
+            apx = x.sibling;
         }
+        System.out.println("arbre merge:");
+        t.head.print(0);
         return t;
     }
 
-    void insert(Node<T> x) {
-        BinomialHeap<T> tbis = new BinomialHeap<T>();
-        x.parent = null;
-        x.sibling = null;
-        x.degree = 0;
-        tbis.head = x;
-        tbis = union(this, tbis);
-        this.head = tbis.head;
-    }
-
-    T findMin() {
-        Node<T> next = this.head.sibling;
-        T min = head.key;
-        while (next != null) {
-            if (superior(min, next.key)) {
-                min = next.key;
+    public void merge(BinomialHeap bh) {
+        Node t1 = head;
+        Node t2 = bh.getMin();
+        while (t1 != null && t2 != null) {
+            if (t1.degree == t2.degree) {
+                Node tmp = t2;
+                t2 = t2.sibling;
+                tmp.sibling = t1.sibling;
+                t1.sibling = tmp;
+                t1 = tmp.sibling;
+            } else {
+                if (t1.degree < t2.degree) {
+                    if (t1.sibling == null || t1.sibling.degree > t2.degree) {
+                        Node tmp = t2;
+                        t2 = t2.sibling;
+                        tmp.sibling = t1.sibling;
+                        t1.sibling = tmp;
+                        t1 = tmp.sibling;
+                    } else {
+                        t1 = t1.sibling;
+                    }
+                } else {
+                    Node tmp = t1;
+                    t1 = t2;
+                    t2 = t2.sibling;
+                    t1.sibling = tmp;
+                    if (tmp == head) {
+                        head = t1;
+                    }
+                }
             }
-            next = next.sibling;
         }
-        return min;
+        if (t1 == null) {
+            t1 = head;
+            while (t1.sibling != null) {
+                t1 = t1.sibling;
+            }
+            t1.sibling = t2;
+        }
     }
 
-    Node<T> extractMin() {
-        T min = findMin();
-        BinomialHeap<T> t = new BinomialHeap<T>();
-        BinomialHeap<T> t1= new BinomialHeap<T>();
-        BinomialHeap<T> t2= new BinomialHeap<T>();
-        Node<T> x = this.head;
-        while (x.key != min) {
-            Node<T> tmp = x;
-            t1.insert(tmp);
+    static public void insert(BinomialHeap bh, Node x) {
+        if (x != null) {
+            BinomialHeap t = new BinomialHeap();
+            x.parent = null;
+            x.sibling = null;
+            x.degree = 0;
+            t.head = x;
+            if (bh.head == null) {
+                bh.setHead(x);
+            } else {
+                System.out.println("arbre bh:");
+                bh.head.print(0);
+                System.out.println("arbre t:");
+                t.head.print(0);
+                bh.setHead(union(bh, t).getHead());
+            }
+        }
+    }
+
+    public Node extractMin() {
+        Node x = head;
+        Node min = x;
+        while (x != null) {
+            if (x.key < min.key) {
+                min = x;
+            }
             x = x.sibling;
         }
-        Node<T> y = x.child;
-        Node<T> z = new Node<>();
-
-        while (y!=null){
-            Node<T> tmp = z;
-            z = new Node<>();
-            z.key = y.key;
-            z.sibling = tmp;
-            y=y.sibling;
+        BinomialHeap t = new BinomialHeap();
+        BinomialHeap t1 = new BinomialHeap();
+        BinomialHeap t2 = new BinomialHeap();
+        t2.head = min.sibling;
+        x = head;
+        while (x != min) {
+            //System.out.println("current x= "+x.key);
+            //System.out.println("current x.sibling= "+x.sibling.key);
+            Node y = x.sibling;
+            insert(t1, x);
+            x = y;
         }
-        t2.head = z;
-        t = union(t1,t2);
-        this.head = t.head;
-        return x;
-    }
+        union(t1, t2);
+        Node orf = min.child;
 
-    public void print() {
-        System.out.println("Binomial heap:");
-        if (head != null) {
-            head.print(0);
+        while (orf != null) {
+            Node y = orf.sibling;
+            insert(t, orf);
+            orf = y;
         }
+        union(t1, t);
+        head = t1.head;
+        return min;
     }
-
-    boolean superior(T arg1, T arg2) {
-        if (arg1 == null || arg2 == null) {
-            return false;
-        } else if (arg1 instanceof Integer && arg2 instanceof Integer) {
-            int x = (Integer) arg1;
-            int y = (Integer) arg2;
-            return x > y;
-        } else {
-            return false;
-        }
-    }
-
-    boolean superiorEqual(T arg1, T arg2) {
-        if (arg1 == null || arg2 == null) {
-            return false;
-        } else if (arg1 instanceof Integer && arg2 instanceof Integer) {
-            int x = (Integer) arg1;
-            int y = (Integer) arg2;
-            return x >= y;
-        } else {
-            return false;
-        }
-    }
-
-
 }

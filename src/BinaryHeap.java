@@ -70,19 +70,21 @@ public class BinaryHeap<T> {
         return get(0);
     }
 
-    T extractMin() {
-        if (size()==0){
+    boolean extractMin() {
+        boolean value = false;
+        if (size() == 0) {
             System.err.println("Tas vide");
-            return null;
+            return value;
         }
         T min = get(0);
         set(0, get(size() - 1));
         remove(size() - 1);
         heapUp(0);
-        if (size() == capacity()/2){
+        if (size() == capacity() / 2) {
             reduce_capacity();
+            value = true;
         }
-        return min;
+        return value;
     }
 
     void reduceKey(int i, T k) {
@@ -99,16 +101,19 @@ public class BinaryHeap<T> {
         }
     }
 
-    void insert(T k) {
-        if (capacity() == size()){
+    boolean insert(T k) {
+        boolean v = false;
+        if (capacity() == size()) {
             enlarge_capacity();
+            v = true;
         }
         add(k);
         reduceKey(size() - 1, k);
+        return v;
     }
 
     void printer() {
-        System.out.println("Data :"+data.toString());
+        System.out.println("Data :" + data.toString());
     }
 
     T get(int pos) {
@@ -123,7 +128,7 @@ public class BinaryHeap<T> {
         data.add(value);
     }
 
-    private int size() {
+    int size() {
         return data.size();
     }
 
@@ -135,14 +140,14 @@ public class BinaryHeap<T> {
         return capacity;
     }
 
-    private void enlarge_capacity(){
+    private void enlarge_capacity() {
         capacity *= 2;
-        data.ensureCapacity( capacity );
+        data.ensureCapacity(capacity);
     }
 
-    void reduce_capacity(){
+    void reduce_capacity() {
         capacity /= 2;
-        data.ensureCapacity( capacity );
+        data.ensureCapacity(capacity);
     }
 
 }

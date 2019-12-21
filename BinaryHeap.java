@@ -63,7 +63,6 @@ public class BinaryHeap<T> {
 
     T extractMin() {
         if (size() == 0) {
-            System.err.println("Tas vide");
             return null;
         }
         T min = get(0);

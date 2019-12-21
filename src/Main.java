@@ -5,7 +5,7 @@ public class Main {
     public static void main(String[] args) {
         int i, time_ind = 0, pop_ind = 0;
         // Tableau dynamique.
-        BinaryHeap<Integer> a = new BinaryHeap<Integer>(); // Changer
+        BinaryHeap<Integer> a = new BinaryHeap<Integer>();
         // Analyse du temps pris par les opérations.
         Analyzer time_analysis = new Analyzer();
         // Analyse du nombre de copies faites par les opérations.
@@ -16,12 +16,13 @@ public class Main {
         // Booléen permettant de savoir si une allocation a été effectuée.
         boolean memory_allocation = true;
 
-        Random rd = new Random(11500697); // Création de la suite pseudo-aléatoire à partir d'une graine.
+
+        Random rd = new Random(11500697);
 
         for (i = 0; i < 1000000; i++) {
             before = System.nanoTime();
             try {
-                a.insert(i);// Modifier la fonction insert pour avoir retourné un boolean et extractMin
+                a.insert(i);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -49,7 +50,7 @@ public class Main {
 
 
         ///////////////////////////////////////////////////////////////////////////////////////////////////
-
+        a = new BinaryHeap<Integer>();
 
         time_analysis = new Analyzer();
         // Analyse du nombre de copies faites par les opérations.
@@ -61,7 +62,7 @@ public class Main {
         for (i = 0; i < 1000000; i++) {
             before = System.nanoTime();
             try {
-                a.insert(1000000 - i);// Modifier la fonction insert pour avoir retourné un boolean et extractMin
+                a.insert(1000000 - i);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -88,7 +89,7 @@ public class Main {
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
+        a = new BinaryHeap<Integer>();
 
         time_analysis = new Analyzer();
         // Analyse du nombre de copies faites par les opérations.
@@ -96,12 +97,15 @@ public class Main {
         // Analyse de l'espace mémoire inutilisé.
         memory_analysis = new Analyzer();
         // Booléen permettant de savoir si une allocation a été effectuée.
+        Analyzer value_analysis = new Analyzer();
+        // Analyse des valeurs choisis
+
 
         for (i = 0; i < 1000000; i++) {
-            int value = rd.nextInt();
+            int value = Math.abs(rd.nextInt(1000000));
             before = System.nanoTime();
             try {
-                a.insert(value);// Modifier la fonction insert pour avoir retourné un boolean et extractMin
+                a.insert(value);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -113,6 +117,8 @@ public class Main {
             copy_analysis.append((memory_allocation == true) ? i : 1);
             // Enregistrement de l'espace mémoire non-utilisé.
             memory_analysis.append(a.capacity() - a.size());
+            // Enregistrement de la valeur
+            value_analysis.append(value);
         }
 
         // Affichage de quelques statistiques sur l'expérience.
@@ -125,10 +131,11 @@ public class Main {
         time_analysis.save_values("dynamic_array_time_binary_random.plot");
         copy_analysis.save_values("dynamic_array_copy_binary_random.plot");
         memory_analysis.save_values("dynamic_array_memory_binary_random.plot");
+        value_analysis.save_values("dynamic_array_value_binary_random.plot");
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
+        a = new BinaryHeap<Integer>();
 
         time_analysis = new Analyzer();
         // Analyse du nombre de copies faites par les opérations.
@@ -136,10 +143,15 @@ public class Main {
         // Analyse de l'espace mémoire inutilisé.
         memory_analysis = new Analyzer();
         // Booléen permettant de savoir si une allocation a été effectuée.
+        value_analysis = new Analyzer();
+
+        Analyzer choice_analysis = new Analyzer();
 
         for (i = 0; i < 1000000; i++) {
-            int value = rd.nextInt();
+            int value = Math.abs(rd.nextInt(1000000));
+            Object o;
             boolean randomValue = rd.nextBoolean();
+            int choice = 1;
             if (randomValue) {
                 before = System.nanoTime();
                 try {
@@ -150,9 +162,15 @@ public class Main {
                 after = System.nanoTime();
                 // Ajout d'un élément et mesure du temps pris par l'opération.
             } else {
+                choice = 0;
                 before = System.nanoTime();
-                a.extractMin();
+                o = a.extractMin();
                 after = System.nanoTime();
+                if (o==null){
+                    value=0;
+                }else {
+                    value= (Integer) o;
+                }
                 // Suppression d'un élément et mesure du temps pris par l'opération.
             }
             // Enregistrement du temps pris par l'opération
@@ -162,6 +180,8 @@ public class Main {
             copy_analysis.append((memory_allocation == true) ? i : 1);
             // Enregistrement de l'espace mémoire non-utilisé.
             memory_analysis.append(a.capacity() - a.size());
+            value_analysis.append(value);
+            choice_analysis.append(choice);
         }
 
         // Affichage de quelques statistiques sur l'expérience.
@@ -174,6 +194,8 @@ public class Main {
         time_analysis.save_values("dynamic_array_time_binary_full.plot");
         copy_analysis.save_values("dynamic_array_copy_binary_full.plot");
         memory_analysis.save_values("dynamic_array_memory_binary_full.plot");
+        value_analysis.save_values("dynamic_array_value_binary_full.plot");
+        choice_analysis.save_values("dynamic_array_choice_binary_full.plot");
     }
 
 }

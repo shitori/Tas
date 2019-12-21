@@ -14,13 +14,17 @@ public class Main {
         Analyzer memory_analysis = new Analyzer();
         long before, after;
         // Booléen permettant de savoir si une allocation a été effectuée.
-        boolean memory_allocation;
+        boolean memory_allocation = true;
 
         Random rd = new Random(11500697); // Création de la suite pseudo-aléatoire à partir d'une graine.
 
         for (i = 0; i < 1000000; i++) {
             before = System.nanoTime();
-            memory_allocation = a.insert(i);// Modifier la fonction insert pour avoir retourné un boolean et extractMin
+            try {
+                a.insert(i);// Modifier la fonction insert pour avoir retourné un boolean et extractMin
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
             after = System.nanoTime();
 
             // Enregistrement du temps pris par l'opération
@@ -39,9 +43,9 @@ public class Main {
         System.err.println("Standard deviation :" + time_analysis.get_standard_deviation());
 
         // Sauvegarde les données de l'expérience: temps et nombre de copies effectuées par opération.
-        time_analysis.save_values("../plots/dynamic_array_time_binary_increase.plot");
-        copy_analysis.save_values("../plots/dynamic_array_copy_binary_increase.plot");
-        memory_analysis.save_values("../plots/dynamic_array_memory_binary_increase.plot");
+        time_analysis.save_values("dynamic_array_time_binary_increase.plot");
+        copy_analysis.save_values("dynamic_array_copy_binary_increase.plot");
+        memory_analysis.save_values("dynamic_array_memory_binary_increase.plot");
 
 
         ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -56,7 +60,11 @@ public class Main {
 
         for (i = 0; i < 1000000; i++) {
             before = System.nanoTime();
-            memory_allocation = a.insert(1000000 - i);// Modifier la fonction insert pour avoir retourné un boolean et extractMin
+            try {
+                a.insert(1000000 - i);// Modifier la fonction insert pour avoir retourné un boolean et extractMin
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
             after = System.nanoTime();
             // Enregistrement du temps pris par l'opération
             time_analysis.append(after - before);
@@ -74,9 +82,9 @@ public class Main {
         System.err.println("Standard deviation :" + time_analysis.get_standard_deviation());
 
         // Sauvegarde les données de l'expérience: temps et nombre de copies effectuées par opération.
-        time_analysis.save_values("../plots/dynamic_array_time_binary_decrease.plot");
-        copy_analysis.save_values("../plots/dynamic_array_copy_binary_decrease.plot");
-        memory_analysis.save_values("../plots/dynamic_array_memory_binary_decrease.plot");
+        time_analysis.save_values("dynamic_array_time_binary_decrease.plot");
+        copy_analysis.save_values("dynamic_array_copy_binary_decrease.plot");
+        memory_analysis.save_values("dynamic_array_memory_binary_decrease.plot");
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -92,7 +100,11 @@ public class Main {
         for (i = 0; i < 1000000; i++) {
             int value = rd.nextInt();
             before = System.nanoTime();
-            memory_allocation = a.insert(value);// Modifier la fonction insert pour avoir retourné un boolean et extractMin
+            try {
+                a.insert(value);// Modifier la fonction insert pour avoir retourné un boolean et extractMin
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
             after = System.nanoTime();
             // Enregistrement du temps pris par l'opération
             time_analysis.append(after - before);
@@ -110,9 +122,9 @@ public class Main {
         System.err.println("Standard deviation :" + time_analysis.get_standard_deviation());
 
         // Sauvegarde les données de l'expérience: temps et nombre de copies effectuées par opération.
-        time_analysis.save_values("../plots/dynamic_array_time_binary_random.plot");
-        copy_analysis.save_values("../plots/dynamic_array_copy_binary_random.plot");
-        memory_analysis.save_values("../plots/dynamic_array_memory_binary_random.plot");
+        time_analysis.save_values("dynamic_array_time_binary_random.plot");
+        copy_analysis.save_values("dynamic_array_copy_binary_random.plot");
+        memory_analysis.save_values("dynamic_array_memory_binary_random.plot");
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -130,12 +142,16 @@ public class Main {
             boolean randomValue = rd.nextBoolean();
             if (randomValue) {
                 before = System.nanoTime();
-                memory_allocation = a.insert(value);// Modifier la fonction insert pour avoir retourné un boolean et extractMin
+                try {
+                    a.insert(value);// Modifier la fonction insert pour avoir retourné un boolean et extractMin
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
                 after = System.nanoTime();
                 // Ajout d'un élément et mesure du temps pris par l'opération.
             } else {
                 before = System.nanoTime();
-                memory_allocation = a.extractMin();
+                a.extractMin();
                 after = System.nanoTime();
                 // Suppression d'un élément et mesure du temps pris par l'opération.
             }
@@ -155,9 +171,9 @@ public class Main {
         System.err.println("Standard deviation :" + time_analysis.get_standard_deviation());
 
         // Sauvegarde les données de l'expérience: temps et nombre de copies effectuées par opération.
-        time_analysis.save_values("../plots/dynamic_array_time_binary_full.plot");
-        copy_analysis.save_values("../plots/dynamic_array_copy_binary_full.plot");
-        memory_analysis.save_values("../plots/dynamic_array_memory_binary_full.plot");
+        time_analysis.save_values("dynamic_array_time_binary_full.plot");
+        copy_analysis.save_values("dynamic_array_copy_binary_full.plot");
+        memory_analysis.save_values("dynamic_array_memory_binary_full.plot");
     }
 
 }

@@ -10,12 +10,7 @@ public class BinaryHeap<T> {
     private int capacity;
 
     public BinaryHeap() {
-        this.capacity = 3;
-        this.data = new ArrayList<T>(this.capacity);
-    }
-
-    public BinaryHeap(int c) {
-        this.capacity = c;
+        this.capacity = 900000;
         this.data = new ArrayList<T>(this.capacity);
     }
 
@@ -42,14 +37,10 @@ public class BinaryHeap<T> {
             return false;
         }
     }
-
     void heapUp(int i) {
-        //printer();
         int l = sonLeft(i);
         int r = sonRight(i);
         int min;
-        //System.out.println(i+"/"+l+"/"+r+"/"+data.toString());
-
         if (l < size() && superior(get(i), get(l))) {
             min = l;
         } else {
@@ -70,21 +61,16 @@ public class BinaryHeap<T> {
         return get(0);
     }
 
-    boolean extractMin() {
-        boolean value = false;
+    T extractMin() {
         if (size() == 0) {
             System.err.println("Tas vide");
-            return value;
+            return null;
         }
         T min = get(0);
         set(0, get(size() - 1));
         remove(size() - 1);
         heapUp(0);
-        if (size() == capacity() / 2) {
-            reduce_capacity();
-            value = true;
-        }
-        return value;
+        return min;
     }
 
     void reduceKey(int i, T k) {
@@ -101,15 +87,12 @@ public class BinaryHeap<T> {
         }
     }
 
-    boolean insert(T k) {
-        boolean v = false;
-        if (capacity() == size()) {
-            enlarge_capacity();
-            v = true;
+    void insert(T k) throws Exception {
+        if (size()==capacity()){
+            throw new Exception("capacité max atteind");
         }
         add(k);
         reduceKey(size() - 1, k);
-        return v;
     }
 
     void printer() {
@@ -139,15 +122,4 @@ public class BinaryHeap<T> {
     int capacity() {
         return capacity;
     }
-
-    private void enlarge_capacity() {
-        capacity *= 2;
-        data.ensureCapacity(capacity);
-    }
-
-    void reduce_capacity() {
-        capacity /= 2;
-        data.ensureCapacity(capacity);
-    }
-
 }

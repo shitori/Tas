@@ -1,11 +1,20 @@
 import java.util.Random;
 
 public class Main {
-
+    BinaryHeap<Integer> a = new BinaryHeap<Integer>();
+    public void fast(BinaryHeap bh, int x){
+        try {
+            bh.insert(x);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
     public static void main(String[] args) {
         int i, time_ind = 0, pop_ind = 0;
         // Tableau dynamique.
         BinaryHeap<Integer> a = new BinaryHeap<Integer>();
+
+
         // Analyse du temps pris par les opérations.
         Analyzer time_analysis = new Analyzer();
         // Analyse du nombre de copies faites par les opérations.

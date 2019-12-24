@@ -9,6 +9,10 @@ public class BinaryHeap<T> {
     private ArrayList<T> data;
     private int capacity;
 
+    /*public BinaryHeap() {
+        this.capacity = 900000;
+        this.data = new ArrayList<T>(this.capacity);
+    }*/
     public BinaryHeap() {
         this.capacity = 900000;
         this.data = new ArrayList<T>(this.capacity);
@@ -87,9 +91,9 @@ public class BinaryHeap<T> {
     }
 
     void insert(T k) throws Exception {
-        if (size()==capacity()){
+        /*if (size()==capacity()){
             throw new Exception("capacité max atteind");
-        }
+        }*/
         add(k);
         reduceKey(size() - 1, k);
     }

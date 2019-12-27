@@ -9,6 +9,9 @@ public class BinaryHeapLock<T> {
     private ArrayList<T> data;
     private int capacity;
 
+    /**
+     * nous fixons ici la capacité max à 800000
+     */
     public BinaryHeapLock() {
         this.capacity = 800000;
         this.data = new ArrayList<T>(this.capacity);
@@ -26,6 +29,11 @@ public class BinaryHeapLock<T> {
         return 2 * i + 2;
     }
 
+    /**
+     * Fonction qui permet de retrourner le
+     * boolean de arg1>arg2, dans notre cas nous intéressons
+     * qu'au entier
+     */
     <T> boolean superior(T arg1, T arg2) {
         if (arg1 == null || arg2 == null) {
             return false;
@@ -37,6 +45,11 @@ public class BinaryHeapLock<T> {
             return false;
         }
     }
+
+    /**
+     * fonction entasser identique à l'algorithme vu en cours
+     * dont le but est de faire de l'arbre de racine i un tas
+     */
     void heapUp(int i) {
         int l = sonLeft(i);
         int r = sonRight(i);
@@ -61,6 +74,11 @@ public class BinaryHeapLock<T> {
         return get(0);
     }
 
+    /**
+     * identique au cours,
+     * on retourne null si l'arbre est vide,
+     * sinon on recupere le min et on réarrange l'abre
+     */
     T extractMin() {
         if (size() == 0) {
             return null;
@@ -72,6 +90,10 @@ public class BinaryHeapLock<T> {
         return min;
     }
 
+    /**
+     * fonction utilisé pendant l'insertion afin de remonté
+     * dans l'arbre la nouvelle valeur
+     */
     void reduceKey(int i, T k) {
         if (superior(k, get(i))) {
             System.err.println("erreur: " + k + ">" + get(i));
@@ -86,6 +108,12 @@ public class BinaryHeapLock<T> {
         }
     }
 
+    /**
+     * la fonction ajoute à l'arraylist
+     * la nouvelle valeur et utilise la fonction
+     * précédente, si la taille maximal est
+     * atteinte, une exception se lance
+     */
     void insert(T k) throws Exception {
         if (size()==capacity()){
             throw new Exception("capacité max atteind");

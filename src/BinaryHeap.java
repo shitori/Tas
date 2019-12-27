@@ -8,10 +8,16 @@ public class BinaryHeap<T> {
 
     private ArrayList<T> data;
 
-    public BinaryHeap() {
+    public BinaryHeap() { //contructeur
         this.data = new ArrayList<T>();
     }
 
+    /**
+     * Les 3 fonctions suivantes sont des
+     * algorithme identique au cours dans
+     * lesquelle on rajoute +/- 1 car une
+     * ArrayList commence à 0.
+     */
     int dad(int i) {
         return (int) (i - 1) / 2;
     }
@@ -24,6 +30,11 @@ public class BinaryHeap<T> {
         return 2 * i + 2;
     }
 
+    /**
+     * Fonction qui permet de retrourner le
+     * boolean de arg1>arg2, dans notre cas nous intéressons
+     * qu'au entier
+     */
     <T> boolean superior(T arg1, T arg2) {
         if (arg1 == null || arg2 == null) {
             return false;
@@ -36,6 +47,10 @@ public class BinaryHeap<T> {
         }
     }
 
+    /**
+     * fonction entasser identique à l'algorithme vu en cours
+     * dont le but est de faire de l'arbre de racine i un tas
+     */
     void heapUp(int i) {
         int l = sonLeft(i);
         int r = sonRight(i);
@@ -60,6 +75,11 @@ public class BinaryHeap<T> {
         return get(0);
     }
 
+    /**
+     * identique au cours,
+     * on retourne null si l'arbre est vide,
+     * sinon on recupere le min et on réarrange l'abre
+     */
     T extractMin() {
         if (size() == 0) {
             return null;
@@ -71,6 +91,10 @@ public class BinaryHeap<T> {
         return min;
     }
 
+    /**
+     * fonction utilisé pendant l'insertion afin de remonté
+     * dans l'arbre la nouvelle valeur
+     */
     void reduceKey(int i, T k) {
         if (superior(k, get(i))) {
             System.err.println("erreur: " + k + ">" + get(i));

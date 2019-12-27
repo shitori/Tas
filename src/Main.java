@@ -3,208 +3,120 @@ import java.util.Random;
 public class Main {
 
     public static void main(String[] args) {
-        int i, time_ind = 0, pop_ind = 0;
-        int nberror = 0;
-        // Tableau dynamique.
-        BinomialHeap<Integer> a = new BinomialHeap<Integer>();
-
-
-        // Analyse du temps pris par les opérations.
-        Analyzer time_analysis = new Analyzer();
-        // Analyse du nombre de copies faites par les opérations.
-        Analyzer copy_analysis = new Analyzer();
-        // Analyse de l'espace mémoire inutilisé.
-        Analyzer memory_analysis = new Analyzer();
-        long before, after;
-        // Booléen permettant de savoir si une allocation a été effectuée.
-        boolean memory_allocation = true;
-
-
+        int index;
+        /*BinomialHeap<Integer> i = new BinomialHeap<Integer>();
+        BinomialHeap<Integer> d = new BinomialHeap<Integer>();
+        BinomialHeap<Integer> r = new BinomialHeap<Integer>();
+        BinomialHeap<Integer> f = new BinomialHeap<Integer>();*/
+        BinaryHeap<Integer> i = new BinaryHeap<Integer>();
+        BinaryHeap<Integer> d = new BinaryHeap<Integer>();
+        BinaryHeap<Integer> r = new BinaryHeap<Integer>();
+        BinaryHeap<Integer> f = new BinaryHeap<Integer>();
+        BinaryHeapLock<Integer> il = new BinaryHeapLock<Integer>();
+        BinaryHeapLock<Integer> dl = new BinaryHeapLock<Integer>();
+        BinaryHeapLock<Integer> rl = new BinaryHeapLock<Integer>();
+        BinaryHeapLock<Integer> fl = new BinaryHeapLock<Integer>();
+        Analyzer time_increase = new Analyzer();
+        Analyzer time_decrease = new Analyzer();
+        Analyzer time_random = new Analyzer();
+        Analyzer time_full = new Analyzer();
+        Analyzer time_increaseL = new Analyzer();
+        Analyzer time_decreaseL = new Analyzer();
+        Analyzer time_randomL = new Analyzer();
+        Analyzer time_fullL = new Analyzer();
+        long beforeI, afterI;
+        long beforeD, afterD;
+        long beforeR, afterR;
+        long beforeF, afterF;
+        long beforeIl, afterIl;
+        long beforeDl, afterDl;
+        long beforeRl, afterRl;
+        long beforeFl, afterFl;
         Random rd = new Random(11500697);
+        for (index = 0; index < 1000000; index++) {
+            beforeI = System.nanoTime();
+            i.insert(index);
+            afterI = System.nanoTime();
+            time_increase.append(afterI - beforeI);
 
-        for (i = 0; i < 1000000; i++) {
-            before = System.nanoTime();
+            beforeIl = System.nanoTime();
             try {
-                a.insert(i);
+                il.insert(index);
             } catch (Exception e) {
                 e.printStackTrace();
-                nberror += 1;
             }
-            after = System.nanoTime();
+            afterIl = System.nanoTime();
+            time_increaseL.append(afterIl - beforeIl);
 
-            // Enregistrement du temps pris par l'opération
-            time_analysis.append(after - before);
-            // Enregistrement du nombre de copies efféctuées par l'opération.
-            // S'il y a eu réallocation de mémoire, il a fallu recopier tout le tableau.
-            copy_analysis.append((memory_allocation == true) ? i : 1);
-            // Enregistrement de l'espace mémoire non-utilisé.
-            //memory_analysis.append(a.capacity() - a.size());
-        }
+            beforeD = System.nanoTime();
+            d.insert(1000000 - index);
+            afterD = System.nanoTime();
+            time_decrease.append(afterD - beforeD);
 
-        // Affichage de quelques statistiques sur l'expérience.
-        System.err.println("Total cost : " + time_analysis.get_total_cost());
-        System.err.println("Average cost : " + time_analysis.get_average_cost());
-        System.err.println("Variance :" + time_analysis.get_variance());
-        System.err.println("Standard deviation :" + time_analysis.get_standard_deviation());
-
-        // Sauvegarde les données de l'expérience: temps et nombre de copies effectuées par opération.
-        time_analysis.save_values("dynamic_array_time_binomial_increase.plot");
-        copy_analysis.save_values("dynamic_array_copy_binomial_increase.plot");
-        memory_analysis.save_values("dynamic_array_memory_binomial_increase.plot");
-
-
-        ///////////////////////////////////////////////////////////////////////////////////////////////////
-        a = new BinomialHeap<Integer>();
-
-        time_analysis = new Analyzer();
-        // Analyse du nombre de copies faites par les opérations.
-        copy_analysis = new Analyzer();
-        // Analyse de l'espace mémoire inutilisé.
-        memory_analysis = new Analyzer();
-        // Booléen permettant de savoir si une allocation a été effectuée.
-
-        for (i = 0; i < 1000000; i++) {
-            before = System.nanoTime();
+            beforeDl = System.nanoTime();
             try {
-                a.insert(1000000 - i);
+                dl.insert(1000000 - index);
             } catch (Exception e) {
                 e.printStackTrace();
-                nberror += 1;
             }
-            after = System.nanoTime();
-            // Enregistrement du temps pris par l'opération
-            time_analysis.append(after - before);
-            // Enregistrement du nombre de copies efféctuées par l'opération.
-            // S'il y a eu réallocation de mémoire, il a fallu recopier tout le tableau.
-            copy_analysis.append((memory_allocation == true) ? i : 1);
-            // Enregistrement de l'espace mémoire non-utilisé.
-            //memory_analysis.append(a.capacity() - a.size());
-        }
+            afterDl = System.nanoTime();
+            time_decreaseL.append(afterDl - beforeDl);
 
-        // Affichage de quelques statistiques sur l'expérience.
-        System.err.println("Total cost : " + time_analysis.get_total_cost());
-        System.err.println("Average cost : " + time_analysis.get_average_cost());
-        System.err.println("Variance :" + time_analysis.get_variance());
-        System.err.println("Standard deviation :" + time_analysis.get_standard_deviation());
+            int value = Math.abs(rd.nextInt());
+            beforeR = System.nanoTime();
+            r.insert(value);
+            afterR = System.nanoTime();
+            time_random.append(afterR - beforeR);
 
-        // Sauvegarde les données de l'expérience: temps et nombre de copies effectuées par opération.
-        time_analysis.save_values("dynamic_array_time_binomial_decrease.plot");
-        copy_analysis.save_values("dynamic_array_copy_binomial_decrease.plot");
-        memory_analysis.save_values("dynamic_array_memory_binomial_decrease.plot");
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        a = new BinomialHeap<Integer>();
-
-        time_analysis = new Analyzer();
-        // Analyse du nombre de copies faites par les opérations.
-        copy_analysis = new Analyzer();
-        // Analyse de l'espace mémoire inutilisé.
-        memory_analysis = new Analyzer();
-        // Booléen permettant de savoir si une allocation a été effectuée.
-        Analyzer value_analysis = new Analyzer();
-        // Analyse des valeurs choisis
-
-
-        for (i = 0; i < 1000000; i++) {
-            int value = Math.abs(rd.nextInt(1000000));
-            before = System.nanoTime();
+            beforeRl = System.nanoTime();
             try {
-                a.insert(value);
+                rl.insert(value);
             } catch (Exception e) {
                 e.printStackTrace();
-                nberror += 1;
             }
-            after = System.nanoTime();
-            // Enregistrement du temps pris par l'opération
-            time_analysis.append(after - before);
-            // Enregistrement du nombre de copies efféctuées par l'opération.
-            // S'il y a eu réallocation de mémoire, il a fallu recopier tout le tableau.
-            copy_analysis.append((memory_allocation == true) ? i : 1);
-            // Enregistrement de l'espace mémoire non-utilisé.
-            //memory_analysis.append(a.capacity() - a.size());
-            // Enregistrement de la valeur
-            value_analysis.append(value);
-        }
+            afterRl = System.nanoTime();
+            time_randomL.append(afterRl - beforeRl);
 
-        // Affichage de quelques statistiques sur l'expérience.
-        System.err.println("Total cost : " + time_analysis.get_total_cost());
-        System.err.println("Average cost : " + time_analysis.get_average_cost());
-        System.err.println("Variance :" + time_analysis.get_variance());
-        System.err.println("Standard deviation :" + time_analysis.get_standard_deviation());
+            boolean bool = rd.nextBoolean();
+            if (bool) {
+                beforeF = System.nanoTime();
+                f.insert(value);
+                afterF = System.nanoTime();
+            } else {
+                beforeF = System.nanoTime();
+                f.extractMin();
+                afterF = System.nanoTime();
+            }
+            time_full.append(afterF - beforeF);
 
-        // Sauvegarde les données de l'expérience: temps et nombre de copies effectuées par opération.
-        time_analysis.save_values("dynamic_array_time_binomial_random.plot");
-        copy_analysis.save_values("dynamic_array_copy_binomial_random.plot");
-        memory_analysis.save_values("dynamic_array_memory_binomial_random.plot");
-        value_analysis.save_values("dynamic_array_value_binomial_random.plot");
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        a = new BinomialHeap<Integer>();
-
-        time_analysis = new Analyzer();
-        // Analyse du nombre de copies faites par les opérations.
-        copy_analysis = new Analyzer();
-        // Analyse de l'espace mémoire inutilisé.
-        memory_analysis = new Analyzer();
-        // Booléen permettant de savoir si une allocation a été effectuée.
-        value_analysis = new Analyzer();
-
-        Analyzer choice_analysis = new Analyzer();
-
-        for (i = 0; i < 1000000; i++) {
-            int value = Math.abs(rd.nextInt(1000000));
-            Object o;
-            boolean randomValue = rd.nextBoolean();
-            int choice = 1;
-            if (randomValue) {
-                before = System.nanoTime();
+            if (bool) {
+                beforeFl = System.nanoTime();
                 try {
-                    a.insert(value);// Modifier la fonction insert pour avoir retourné un boolean et extractMin
+                    fl.insert(value);
                 } catch (Exception e) {
                     e.printStackTrace();
-                    nberror += 1;
                 }
-                after = System.nanoTime();
-                // Ajout d'un élément et mesure du temps pris par l'opération.
+                afterFl = System.nanoTime();
             } else {
-                choice = 0;
-                before = System.nanoTime();
-                o = a.extractMin();
-                after = System.nanoTime();
-                if (o == null) {
-                    value = 0;
-                } else {
-                    value = (Integer) o;
-                }
-                // Suppression d'un élément et mesure du temps pris par l'opération.
+                beforeFl = System.nanoTime();
+                fl.extractMin();
+                afterFl = System.nanoTime();
             }
-            // Enregistrement du temps pris par l'opération
-            time_analysis.append(after - before);
-            // Enregistrement du nombre de copies efféctuées par l'opération.
-            // S'il y a eu réallocation de mémoire, il a fallu recopier tout le tableau.
-            copy_analysis.append((memory_allocation == true) ? i : 1);
-            // Enregistrement de l'espace mémoire non-utilisé.
-            //memory_analysis.append(a.capacity() - a.size());
-            value_analysis.append(value);
-            choice_analysis.append(choice);
+            time_fullL.append(afterFl - beforeFl);
         }
+        /*time_increase.save_values("binomial_increase.plot");
+        time_decrease.save_values("binomial_decrease.plot");
+        time_random.save_values("binomial_random.plot");
+        time_full.save_values("binomial_full.plot");*/
+        time_increase.save_values("binary_increase.plot");
+        time_decrease.save_values("binary_decrease.plot");
+        time_random.save_values("binary_random.plot");
+        time_full.save_values("binary_full.plot");
 
-        // Affichage de quelques statistiques sur l'expérience.
-        System.err.println("Total cost : " + time_analysis.get_total_cost());
-        System.err.println("Average cost : " + time_analysis.get_average_cost());
-        System.err.println("Variance :" + time_analysis.get_variance());
-        System.err.println("Standard deviation :" + time_analysis.get_standard_deviation());
-
-        // Sauvegarde les données de l'expérience: temps et nombre de copies effectuées par opération.
-        time_analysis.save_values("dynamic_array_time_binomial_full.plot");
-        copy_analysis.save_values("dynamic_array_copy_binomial_full.plot");
-        memory_analysis.save_values("dynamic_array_memory_binomial_full.plot");
-        value_analysis.save_values("dynamic_array_value_binomial_full.plot");
-        choice_analysis.save_values("dynamic_array_choice_binomial_full.plot");
-
-        System.out.println("nberro ="+nberror);
+        time_increaseL.save_values("binaryL_increase.plot");
+        time_decreaseL.save_values("binaryL_decrease.plot");
+        time_randomL.save_values("binaryL_random.plot");
+        time_fullL.save_values("binaryL_full.plot");
     }
 
 }

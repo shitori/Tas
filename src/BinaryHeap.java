@@ -7,15 +7,9 @@ import java.util.ArrayList;
 public class BinaryHeap<T> {
 
     private ArrayList<T> data;
-    private int capacity;
 
-    /*public BinaryHeap() {
-        this.capacity = 900000;
-        this.data = new ArrayList<T>(this.capacity);
-    }*/
     public BinaryHeap() {
-        this.capacity = 900000;
-        this.data = new ArrayList<T>(this.capacity);
+        this.data = new ArrayList<T>();
     }
 
     int dad(int i) {
@@ -41,6 +35,7 @@ public class BinaryHeap<T> {
             return false;
         }
     }
+
     void heapUp(int i) {
         int l = sonLeft(i);
         int r = sonRight(i);
@@ -90,10 +85,7 @@ public class BinaryHeap<T> {
         }
     }
 
-    void insert(T k) throws Exception {
-        /*if (size()==capacity()){
-            throw new Exception("capacité max atteind");
-        }*/
+    void insert(T k){
         add(k);
         reduceKey(size() - 1, k);
     }
@@ -122,7 +114,4 @@ public class BinaryHeap<T> {
         data.remove(pos);
     }
 
-    int capacity() {
-        return capacity;
-    }
 }

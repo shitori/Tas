@@ -4,14 +4,14 @@ public class Main {
 
     public static void main(String[] args) {
         int index;
-        /*BinomialHeap<Integer> i = new BinomialHeap<Integer>();
+        BinomialHeap<Integer> i = new BinomialHeap<Integer>();
         BinomialHeap<Integer> d = new BinomialHeap<Integer>();
         BinomialHeap<Integer> r = new BinomialHeap<Integer>();
-        BinomialHeap<Integer> f = new BinomialHeap<Integer>();*/
-        BinaryHeap<Integer> i = new BinaryHeap<Integer>();
+        BinomialHeap<Integer> f = new BinomialHeap<Integer>();
+        /*BinaryHeap<Integer> i = new BinaryHeap<Integer>();
         BinaryHeap<Integer> d = new BinaryHeap<Integer>();
         BinaryHeap<Integer> r = new BinaryHeap<Integer>();
-        BinaryHeap<Integer> f = new BinaryHeap<Integer>();
+        BinaryHeap<Integer> f = new BinaryHeap<Integer>();*/
         BinaryHeapLock<Integer> il = new BinaryHeapLock<Integer>();
         BinaryHeapLock<Integer> dl = new BinaryHeapLock<Integer>();
         BinaryHeapLock<Integer> rl = new BinaryHeapLock<Integer>();

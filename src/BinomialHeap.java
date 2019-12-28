@@ -22,12 +22,23 @@ public class BinomialHeap<T extends Comparable<T>> {
         head = null;
     }
 
+    /**
+     * identique à l'algorithme vu en cours,
+     * on créer un noeud à partir de la valeur key
+     * avec lequel on créer un nouvel arbre que l'on
+     * va unir avec la fonction union
+     */
     public void insert(T key) {
         Node<T> node = new Node<T>(key);
         BinomialHeap<T> tempHeap = new BinomialHeap<T>(node);
         head = union(tempHeap);
     }
 
+    /**
+     * la fonction cherche parmis tout les freres
+     * de la racine et elle-meme qui est le plus petit
+     * et qui sera forcément la valeur minimal du tas
+     */
     public T findMinimum() {
         if (head == null) {
             return null;
@@ -46,56 +57,6 @@ public class BinomialHeap<T extends Comparable<T>> {
         }
     }
 
-    // Implemented to test delete/decrease key, runs in O(n) time
-    public Node<T> search(T key) {
-        List<Node<T>> nodes = new ArrayList<Node<T>>();
-        nodes.add(head);
-        while (!nodes.isEmpty()) {
-            Node<T> curr = nodes.get(0);
-            nodes.remove(0);
-            if (curr.key == key) {
-                return curr;
-            }
-            if (curr.sibling != null) {
-                nodes.add(curr.sibling);
-            }
-            if (curr.child != null) {
-                nodes.add(curr.child);
-            }
-        }
-        return null;
-    }
-
-    public void decreaseKey(Node<T> node, T newKey) {
-        node.key = newKey;
-        bubbleUp(node, false);
-    }
-
-    public void delete(Node<T> node) {
-        node = bubbleUp(node, true);
-        if (head == node) {
-            removeTreeRoot(node, null);
-        } else {
-            Node<T> prev = head;
-            while (prev.sibling.compareTo(node) != 0) {
-                prev = prev.sibling;
-            }
-            removeTreeRoot(node, prev);
-        }
-    }
-
-    private Node<T> bubbleUp(Node<T> node, boolean toRoot) {
-        Node<T> parent = node.parent;
-        while (parent != null && (toRoot || node.compareTo(parent) < 0)) {
-            T temp = node.key;
-            node.key = parent.key;
-            parent.key = temp;
-            node = parent;
-            parent = parent.parent;
-        }
-        return node;
-    }
-
     public T extractMin() {
         if (head == null) {
             return null;
@@ -105,7 +66,7 @@ public class BinomialHeap<T extends Comparable<T>> {
         Node<T> minPrev = null;
         Node<T> next = min.sibling;
         Node<T> nextPrev = min;
-
+        // boncle permettant de localiser le minimum et son frere de gauche
         while (next != null) {
             if (next.compareTo(min) < 0) {
                 min = next;
@@ -120,30 +81,35 @@ public class BinomialHeap<T extends Comparable<T>> {
     }
 
     private void removeTreeRoot(Node<T> root, Node<T> prev) {
-        // Remove root from the heap
+        // si le min etait à la tete de l'arbre binomial
         if (root == head) {
-            head = root.sibling;
+            head = root.sibling; // alors la tete de l'arbre de l'arbre devient le frere de la tete actuel
         } else {
-            prev.sibling = root.sibling;
+            prev.sibling = root.sibling; // sinon on relie le frere de gauche de min au frere de droite de min
         }
 
-        // Reverse the order of root's children and make a new heap
+        // fonction qui inverse l'ordre chainé des enfants du min
         Node<T> newHead = null;
         Node<T> child = root.child;
         while (child != null) {
-            Node<T> next = child.sibling;
-            child.sibling = newHead;
-            child.parent = null;
-            newHead = child;
-            child = next;
+            Node<T> next = child.sibling; // permet de sauvegardé les freres de droite
+            child.sibling = newHead; // supprime les frères par les nouveaux
+            child.parent = null; // supprime le parent
+            newHead = child; // déplace la tete vers le frere le plus à gauche
+            child = next; // passe au frere de droite suivant
         }
+        // on crée un nouvel arbre à partir de cette nouvelle tete
         BinomialHeap<T> newHeap = new BinomialHeap<T>(newHead);
 
-        // Union the heaps and set its head as this.head
+        // puis on unis notre arbre avec l'arbre précedent
         head = union(newHeap);
     }
 
-    // Merge two binomial trees of the same order
+    /**
+     * identique à l'algorithme vu en cours,
+     * permet de lié deux arbres entre eux,
+     * où minNodeTree de vient le pere de other
+     */
     private void linkTree(Node<T> minNodeTree, Node<T> other) {
         other.parent = minNodeTree;
         other.sibling = minNodeTree.child;
@@ -151,10 +117,10 @@ public class BinomialHeap<T extends Comparable<T>> {
         minNodeTree.degree++;
     }
 
-    // Union two binomial heaps into one and return the head
     public Node<T> union(BinomialHeap<T> heap) {
+        // on commence par fusionne notre arbre avec l'arbre heap
         Node<T> newHead = merge(this, heap);
-
+        // on libere les deux arbre
         head = null;
         heap.head = null;
 
@@ -165,7 +131,7 @@ public class BinomialHeap<T extends Comparable<T>> {
         Node<T> prev = null;
         Node<T> curr = newHead;
         Node<T> next = newHead.sibling;
-
+        // boucle qui lie les arbre lie 2 freres de meme dégré en fonction de qui à la racine la plus grande
         while (next != null) {
             if (curr.degree != next.degree || (next.sibling != null &&
                     next.sibling.degree == curr.degree)) {
@@ -193,6 +159,10 @@ public class BinomialHeap<T extends Comparable<T>> {
         return newHead;
     }
 
+    /**
+     * cette fonction retourne un noeud avec ses freres triés
+     * par rapport au dégré croissant
+     */
     private static <T extends Comparable<T>> Node<T> merge(
             BinomialHeap<T> heap1, BinomialHeap<T> heap2) {
         if (heap1.head == null) {
@@ -203,7 +173,7 @@ public class BinomialHeap<T extends Comparable<T>> {
             Node<T> head;
             Node<T> heap1Next = heap1.head;
             Node<T> heap2Next = heap2.head;
-
+            // condition pour savoir par quelle arbre son commence
             if (heap1.head.degree <= heap2.head.degree) {
                 head = heap1.head;
                 heap1Next = heap1Next.sibling;
@@ -213,7 +183,7 @@ public class BinomialHeap<T extends Comparable<T>> {
             }
 
             Node<T> tail = head;
-
+            // boucle qui rajoute les freres de heap1 et heap2 en fonction du degréé
             while (heap1Next != null && heap2Next != null) {
                 if (heap1Next.degree <= heap2Next.degree) {
                     tail.sibling = heap1Next;
@@ -225,7 +195,7 @@ public class BinomialHeap<T extends Comparable<T>> {
 
                 tail = tail.sibling;
             }
-
+            // fini par ajouté le reste de heap1 ou heap2
             if (heap1Next != null) {
                 tail.sibling = heap1Next;
             } else {
@@ -259,9 +229,13 @@ public class BinomialHeap<T extends Comparable<T>> {
             this.key = key;
         }
 
+        /**
+         * fonction de comparaison entre 2 node
+         */
         public int compareTo(Node<T> other) {
             return this.key.compareTo(other.key);
         }
+
 
         public void print(int level) {
             Node<T> curr = this;
